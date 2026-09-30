@@ -42,7 +42,7 @@ def badge(chiamate, preventivi, ordini):
     if chiamate >= 500:
         badges.append("☎️ Call Machine")
 
-    if preventivi >= 50:
+    if preventivi >= 30:
         badges.append("📄 Proposal Master")
 
     if ordini >= 10:
@@ -139,10 +139,12 @@ if is_admin:
 
         if chiamate > 0:
             punti = (
-                preventivi +
-                ((ordini * 3) / chiamate) * 100
-            )
+                preventivi * 1) +
+                (ordini * 3) 
+            ) / chiamate * 100
+            
         else:
+
             punti = 0
 
         nuovo_record = pd.DataFrame([{
