@@ -37,6 +37,7 @@ def livello(xp):
 
 
 def badge(chiamate, preventivi, ordini):
+
     badges = []
 
     if chiamate >= 500:
@@ -94,7 +95,7 @@ if is_admin:
 df = pd.read_excel(FILE_DATI)
 
 # =====================================
-# INSERIMENTO DATI (SOLO ADMIN)
+# INSERIMENTO DATI
 # =====================================
 
 if is_admin:
@@ -138,11 +139,15 @@ if is_admin:
     if st.sidebar.button("💾 Salva"):
 
         if chiamate > 0:
+
             punti = (
-                preventivi * 1) +
-                (ordini * 3) 
-            ) / chiamate * 100
-            
+                (
+                    (preventivi * 1)
+                    + (ordini * 3)
+                )
+                / chiamate
+            ) * 100
+
         else:
 
             punti = 0
@@ -181,7 +186,7 @@ if df.empty:
     st.stop()
 
 # =====================================
-# DATE
+# GESTIONE DATE
 # =====================================
 
 df["Data"] = pd.to_datetime(
@@ -211,7 +216,9 @@ df_filtrato = df[
 ]
 
 if df_filtrato.empty:
-    st.warning("Nessun dato disponibile per il mese selezionato.")
+    st.warning(
+        "Nessun dato disponibile per il mese selezionato."
+    )
     st.stop()
 
 # =====================================
@@ -230,8 +237,9 @@ classifica = (
     .reset_index()
 )
 
-classifica["Livello"] = classifica["Punti"].apply(
-    livello
+classifica["Livello"] = (
+    classifica["Punti"]
+    .apply(livello)
 )
 
 classifica["Badge"] = classifica.apply(
@@ -249,7 +257,7 @@ classifica = classifica.sort_values(
 ).reset_index(drop=True)
 
 # =====================================
-# LEADER
+# LEADER DEL MESE
 # =====================================
 
 leader = classifica.iloc[0]
@@ -291,7 +299,7 @@ if len(classifica) >= 3:
 # TARGET
 # =====================================
 
-st.subheader("🎯 Avanzamento Target")
+st.subheader("🎯 Avanzamento verso il target")
 
 for riga in classifica.itertuples():
 
@@ -304,4 +312,70 @@ for riga in classifica.itertuples():
         f"**{riga.Venditore}** - {percentuale:.0%}"
     )
 
-   
+    st.progress(percentuale)
+
+# =====================================
+# CLASSIFICA
+# =====================================
+
+st.subheader("📊 Classifica")
+
+st.dataframe(
+    classifica,
+    use_container_width=True,
+    hide_index=True
+)
+
+# =====================================
+# RANKING VISIVO
+# =====================================
+
+st.subheader("🏆 Ranking Visuale")
+
+for posizione, riga in enumerate(
+    classifica.itertuples(),
+    start=1
+):
+
+    st.markdown(
+        f"""
+### #{posizione} - {riga.Venditore}
+
+**Livello:** {riga.Livello}
+
+**Badge:** {riga.Badge}
+
+**Punti:** {riga.Punti:.1f}
+"""
+    )
+
+    st.progress(
+        min(riga.Punti / 5000, 1.0)
+    )
+
+# =====================================
+# GRAFICO
+# =====================================
+
+st.subheader("📈 Classifica Grafica")
+
+st.bar_chart(
+    classifica.set_index("Venditore")["Punti"]
+)
+
+# =====================================
+# DETTAGLIO ATTIVITÀ
+# =====================================
+
+if is_admin:
+
+    st.subheader("📋 Dettaglio Attività")
+
+    st.dataframe(
+        df_filtrato.sort_values(
+            by="Data",
+            ascending=False
+        ),
+        use_container_width=True,
+        hide_index=True
+    )
