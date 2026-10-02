@@ -46,10 +46,40 @@ div[data-testid="metric-container"]{
     padding:10px;
 }
 
+.spaggiari-card {
+    background: #EAF5F5;
+    border-left: 6px solid #0E6B6F;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.spaggiari-alert {
+    background:#EAF5F5;
+    border-left:6px solid #0E6B6F;
+    padding:15px;
+    border-radius:12px;
+    text-align:left;
+    font-size:16px;
+    font-weight:normal;
+}
+``
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🏆 Sales Championship")
+col_logo, col_title = st.columns([1.5, 4])
+
+with col_logo:
+    st.image(
+        "logo.png",
+        width=300
+    )
+
+with col_title:
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.title("🏆 Sales Championship")
+    st.caption("Powered by Laura | Spaggiari")
 
 # =====================================
 # FUNZIONI
@@ -373,6 +403,37 @@ df = df.sort_values(
     "Punti",
     ascending=False
 ).reset_index(drop=True)
+totale_chiamate = int(df["Chiamate"].sum())
+tot_preventivi = int(df["Preventivi"].sum())
+tot_ordini = int(df["Ordini"].sum())
+
+leader = df.iloc[0]
+
+k1, k2, k3, k4 = st.columns(4)
+
+with k1:
+    st.metric(
+        "☎️ Chiamate Team",
+        totale_chiamate
+    )
+
+with k2:
+    st.metric(
+        "📄 Preventivi",
+        tot_preventivi
+    )
+
+with k3:
+    st.metric(
+        "💰 Ordini",
+        tot_ordini
+    )
+
+with k4:
+    st.metric(
+        "👑 Leader",
+        leader["Venditore"]
+    )
 
 # =====================================
 # TARGET TEAM
@@ -406,19 +467,15 @@ ultimo_giorno = monthrange(
 
 giorni_mancanti = ultimo_giorno - oggi.day
 
-st.info(
-    f"⏳ Mancano {giorni_mancanti} giorni alla fine del contest"
+st.markdown(
+    f"""
+<div class="spaggiari-alert">
+⏳ Mancano {giorni_mancanti} giorni alla fine del contest
+</div>
+""",
+    unsafe_allow_html=True
 )
 
-# =====================================
-# LEADER
-# =====================================
-
-leader = df.iloc[0]
-
-st.success(
-    f"🔥 Leader del mese: {leader['Venditore']} ({leader['Punti']:.1f} punti)"
-)
 
 # =====================================
 # PODIO
@@ -426,7 +483,7 @@ st.success(
 
 st.subheader("🏆 Hall of Champions")
 
-col_sx, col_centro, col_dx = st.columns([1, 1.3, 1])
+col_sx, col_centro, col_dx = st.columns([1, 1.6, 1])
 
 if len(df) >= 2:
 
@@ -444,8 +501,19 @@ if len(df) >= 1:
 
     with col_centro:
 
-        st.success(
-            f"👑 {df.iloc[0]['Venditore']} - {df.iloc[0]['Punti']:.1f} punti"
+        st.markdown(
+            f"""
+<div class="spaggiari-card">
+
+<h4>👑 LEADER DEL MESE</h4>
+
+<h2>🥇 {df.iloc[0]['Venditore']}</h2>
+
+<b>{df.iloc[0]['Punti']:.1f} punti</b>
+
+</div>
+""",
+            unsafe_allow_html=True
         )
 
 if len(df) >= 3:
@@ -586,10 +654,19 @@ else:
 
     for riga in hall.itertuples():
 
-        st.success(
-            f"👑 {riga.Mese} • "
-            f"{riga.Vincitrice} "
-            f"({riga.Punti} punti)"
+        st.markdown(
+            f"""
+<div class="spaggiari-alert">
+
+👑 {riga.Mese}<br>
+
+{riga.Vincitrice}<br>
+
+{riga.Punti} punti
+
+</div>
+""",
+            unsafe_allow_html=True
         )
 
 # =====================================
