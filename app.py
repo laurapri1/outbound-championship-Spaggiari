@@ -623,16 +623,6 @@ for posizione, riga in enumerate(
     )
 
 # =====================================
-# GRAFICO
-# =====================================
-
-st.subheader("📈 Classifica Grafica")
-
-st.bar_chart(
-    df.set_index("Venditore")["Punti"]
-)
-
-# =====================================
 # HALL OF FAME
 # =====================================
 
