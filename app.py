@@ -55,6 +55,15 @@ div[data-testid="metric-container"]{
     text-align: center;
 }
 
+.podio-card {
+    background: white;
+    border: 1px solid #E2E8F0;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    height: 150px;
+}
+
 .spaggiari-alert {
     background:#EAF5F5;
     border-left:6px solid #0E6B6F;
@@ -64,6 +73,7 @@ div[data-testid="metric-container"]{
     font-size:16px;
     font-weight:normal;
 }
+
 ``
 </style>
 """, unsafe_allow_html=True)
@@ -491,10 +501,15 @@ if len(df) >= 2:
 
         st.markdown(
             f"""
-### 🥈 {df.iloc[1]['Venditore']}
+<div class="podio-card">
 
-**{df.iloc[1]['Punti']:.1f} punti**
-"""
+<h3>🥈 {df.iloc[1]['Venditore']}</h3>
+
+<b>{df.iloc[1]['Punti']:.1f} punti</b>
+
+</div>
+""",
+            unsafe_allow_html=True
         )
 
 if len(df) >= 1:
@@ -522,11 +537,17 @@ if len(df) >= 3:
 
         st.markdown(
             f"""
-### 🥉 {df.iloc[2]['Venditore']}
+<div class="podio-card">
 
-**{df.iloc[2]['Punti']:.1f} punti**
-"""
-        )
+<h3>🥉 {df.iloc[2]['Venditore']}</h3>
+
+<b>{df.iloc[2]['Punti']:.1f} punti</b>
+
+</div>
+""",
+            unsafe_allow_html=True
+        )        
+
 
 # =====================================
 # QUEENS DEL MESE
